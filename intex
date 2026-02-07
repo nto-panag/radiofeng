@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mastoras Live Radio | Winamp Edition</title>
+    <style>
+        body { 
+            background: #121212; 
+            color: #00ff00; 
+            font-family: 'Courier New', monospace; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            border: 3px solid #333;
+            background: #000;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.2);
+            border-radius: 10px;
+            width: 350px;
+        }
+        h1 { font-size: 1.2rem; margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 10px; }
+        
+        /* Vintage Audio Player Style */
+        audio { 
+            width: 100%; 
+            filter: invert(100%) hue-rotate(90deg) brightness(1.5); 
+            margin: 20px 0;
+        }
+
+        #song-title {
+            background: #111;
+            padding: 10px;
+            border-radius: 5px;
+            min-height: 20px;
+            font-size: 0.9rem;
+            color: #ffcc00;
+            border: 1px inset #333;
+        }
+
+        .status-light {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background: #f00;
+            border-radius: 50%;
+            margin-right: 5px;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            50% { opacity: 0.3; }
+        }
+
+        .footer {
+            margin-top: 25px;
+            font-size: 0.7rem;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1><span class="status-light"></span>feng LIVE RADIO</h1>
+        
+        <div id="song-title">Περιμένω σήμα...</div>
+
+        <audio controls>
+            <source src="http://85.73.111.21:8000/;" type="audio/mpeg">
+            Your browser does not support the audio element.
+        </audio>
+
+        <div class="footer">
+            RUNNING ON: WINAMP 5.01<br>
+            BITRATE: 128 KBPS
+        </div>
+    </div>
+
+    <script>
+        // Η IP σου για τα δεδομένα
+        const serverIP = "http://85.73.111.21:8000/7.html";
+
+        function updateStats() {
+            fetch(serverIP)
+                .then(response => response.text())
+                .then(data => {
+                    // Το Shoutcast 1.9.2 επιστρέφει: listeners,1,max,peak,total,bitrate,Song Title
+                    const parts = data.split(',');
+                    if (parts.length > 6) {
+                        document.getElementById('song-title').innerText = parts[6];
+                        document.querySelector('.status-light').style.background = "#0f0";
+                    }
+                })
+                .catch(err => {
+                    console.log("Server is offline or CORS blocked");
+                    document.getElementById('song-title').innerText = "Offline ή Buffer...";
+                    document.querySelector('.status-light').style.background = "#f00";
+                });
+        }
+
+        // Ανανέωση κάθε 15 δευτερόλεπτα
+        setInterval(updateStats, 15000);
+        updateStats();
+    </script>
+
+</body>
+</html>
