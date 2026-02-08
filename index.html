@@ -3,115 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>feng Live Radio | Winamp Edition</title>
+    <title>Radio Feng - Live Stream</title>
     <style>
-        body { 
-            background: #121212; 
-            color: #00ff00; 
-            font-family: 'Courier New', monospace; 
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-        .container {
-            border: 3px solid #333;
-            background: #000;
-            padding: 30px;
-            text-align: center;
-            box-shadow: 0 0 20px rgba(0, 255, 0, 0.2);
-            border-radius: 10px;
-            width: 350px;
-        }
-        h1 { font-size: 1.2rem; margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 10px; }
-        
-        /* Vintage Audio Player Style */
-        audio { 
-            width: 100%; 
-            filter: invert(100%) hue-rotate(90deg) brightness(1.5); 
-            margin: 20px 0;
-        }
-
-        #song-title {
-            background: #111;
-            padding: 10px;
-            border-radius: 5px;
-            min-height: 20px;
-            font-size: 0.9rem;
-            color: #ffcc00;
-            border: 1px inset #333;
-        }
-
-        .status-light {
-            display: inline-block;
-            width: 10px;
-            height: 10px;
-            background: #f00;
-            border-radius: 50%;
-            margin-right: 5px;
-            animation: blink 1s infinite;
-        }
-
-        @keyframes blink {
-            50% { opacity: 0.3; }
-        }
-
-        .footer {
-            margin-top: 25px;
-            font-size: 0.7rem;
-            color: #666;
-        }
+        body { background-color: #1a1a1a; color: white; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; text-align: center; padding-top: 50px; }
+        .player-container { background: #2d2d2d; max-width: 400px; margin: 0 auto; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        h1 { color: #ff9900; margin-bottom: 10px; }
+        #status { font-size: 14px; color: #888; margin-bottom: 20px; }
+        audio { width: 100%; margin: 20px 0; }
+        .now-playing { font-weight: bold; font-size: 18px; color: #00ff00; margin-top: 10px; }
+        .footer { margin-top: 30px; font-size: 12px; color: #555; }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1><span class="status-light"></span>feng LIVE RADIO</h1>
+    <div class="player-container">
+        <h1>RADIO FENG</h1>
+        <div id="status">LIVE BROADCAST</div>
         
-        <div id="song-title">Περιμένω σήμα...</div>
-
-        <audio controls>
-            <source src="http://79.107.137.54:8000/;" type="audio/mpeg">
-            Your browser does not support the audio element.
+        <audio controls autoplay>
+            <source src="http://79.107.137.54:8000/;stream.mp3" type="audio/mpeg">
+            Ο browser σου δεν υποστηρίζει τον player.
         </audio>
 
-        <div class="footer">
-            RUNNING ON: WINAMP 5.01<br>
-            BITRATE: 128 KBPS
+        <div class="now-playing">
+            <span id="songtitle">Φορτώνει τίτλο...</span>
         </div>
     </div>
 
+    <div class="footer">
+        Powered by VirtualDJ & SHOUTcast <br>
+        &copy; 2024 Radio Feng
+    </div>
+
     <script>
-        // Η IP σου για τα δεδομένα
-        const serverIP = "http://79.107.137.54:8000/;"
-
-        function updateStats() {
-            fetch(serverIP)
-                .then(response => response.text())
-                .then(data => {
-                    // Το Shoutcast 1.9.2 επιστρέφει: listeners,1,max,peak,total,bitrate,Song Title
-                    const parts = data.split(',');
-                    if (parts.length > 6) {
-                        document.getElementById('song-title').innerText = parts[6];
-                        document.querySelector('.status-light').style.background = "#0f0";
-                    }
-                })
-                .catch(err => {
-                    console.log("Server is offline or CORS blocked");
-                    document.getElementById('song-title').innerText = "Offline ή Buffer...";
-                    document.querySelector('.status-light').style.background = "#f00";
-                });
+        // Μικρό script για να τραβάει τον τίτλο χωρίς Winamp αναφορές
+        function updateTitle() {
+            fetch('https://api.allorigins.win/get?url=' + encodeURIComponent('http://79.107.137.54:8000/7.html'))
+            .then(response => response.json())
+            .then(data => {
+                const parser = new DOMParser();
+                const htmlDoc = parser.parseFromString(data.contents, 'text/html');
+                const content = htmlDoc.body.innerText;
+                const song = content.split(',')[6];
+                document.getElementById('songtitle').innerText = song ? song : "Live Stream";
+            })
+            .catch(() => {
+                document.getElementById('songtitle').innerText = "Radio Feng Live";
+            });
         }
-
-        // Ανανέωση κάθε 15 δευτερόλεπτα
-        setInterval(updateStats, 15000);
-        updateStats();
+        setInterval(updateTitle, 10000); // Ανανέωση τίτλου κάθε 10 δευτερόλεπτα
+        updateTitle();
     </script>
 
 </body>
-
 </html>
+
 
 
 
