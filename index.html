@@ -1,63 +1,30 @@
+
 <!DOCTYPE html>
 <html lang="el">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Radio Feng - Live Stream</title>
+    <title>Απο τον Αντρεα for ViVi</title>
     <style>
-        body { background-color: #1a1a1a; color: white; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; text-align: center; padding-top: 50px; }
-        .player-container { background: #2d2d2d; max-width: 400px; margin: 0 auto; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        h1 { color: #ff9900; margin-bottom: 10px; }
-        #status { font-size: 14px; color: #888; margin-bottom: 20px; }
-        audio { width: 100%; margin: 20px 0; }
-        .now-playing { font-weight: bold; font-size: 18px; color: #00ff00; margin-top: 10px; }
-        .footer { margin-top: 30px; font-size: 12px; color: #555; }
+        body { background-color: #1a1a1a; color: white; font-family: sans-serif; text-align: center; padding-top: 50px; }
+        .player-container { background: #2d2d2d; max-width: 400px; margin: 0 auto; padding: 30px; border-radius: 15px; border: 2px solid #ff9900; }
+        h1 { color: #ff9900; }
+        .status { color: #00ff00; font-weight: bold; margin-bottom: 20px; }
+        audio { width: 100%; }
     </style>
 </head>
 <body>
-
     <div class="player-container">
-        <h1>RADIO FENG</h1>
-        <div id="status">LIVE BROADCAST</div>
-        
-        <audio controls autoplay>
-            <source src="http://79.107.137.54:8000/;stream.mp3" type="audio/mpeg">
+        <h1>RADIO feng</h1>
+        <div class="status">● ON AIR</div>
+        <audio controls>
+            <source src="http://85.73.111.21:8002/;stream.mp3" type="audio/mpeg">
             Ο browser σου δεν υποστηρίζει τον player.
         </audio>
-
-        <div class="now-playing">
-            <span id="songtitle">Φορτώνει τίτλο...</span>
-        </div>
+        <p>Αντώνης στα decks!</p>
     </div>
-
-    <div class="footer">
-        Powered by VirtualDJ & SHOUTcast <br>
-        &copy; 2024 Radio Feng
-    </div>
-
-    <script>
-        // Μικρό script για να τραβάει τον τίτλο χωρίς Winamp αναφορές
-        function updateTitle() {
-            fetch('https://api.allorigins.win/get?url=' + encodeURIComponent('http://79.107.137.54:8000/7.html'))
-            .then(response => response.json())
-            .then(data => {
-                const parser = new DOMParser();
-                const htmlDoc = parser.parseFromString(data.contents, 'text/html');
-                const content = htmlDoc.body.innerText;
-                const song = content.split(',')[6];
-                document.getElementById('songtitle').innerText = song ? song : "Live Stream";
-            })
-            .catch(() => {
-                document.getElementById('songtitle').innerText = "Radio Feng Live";
-            });
-        }
-        setInterval(updateTitle, 10000); // Ανανέωση τίτλου κάθε 10 δευτερόλεπτα
-        updateTitle();
-    </script>
-
 </body>
 </html>
-
 
 
 
